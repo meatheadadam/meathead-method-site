@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "api/articles.js": {
+      "memory": 512,
+      "maxDuration": 10
+    }
+  },
+  "rewrites": [
+    { "source": "/api/articles", "destination": "/api/articles" }
+  ]
+}
