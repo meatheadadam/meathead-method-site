@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meathead Method</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a08;
+    --offwhite: #f5f2ec;
+    --cream: #e8e3d9;
+    --gold: #b8960c;
+    --gold-light: #d4af37;
+    --warm-gray: #8c8880;
+    --dark-gray: #1a1a16;
+    --text: #1e1d19;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--offwhite);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 3rem;
+    background: rgba(245, 242, 236, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(184, 150, 12, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .nav-logo span {
+    color: var(--gold);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--offwhite);
+    background: var(--black);
+    border: none;
+    padding: 0.65rem 1.4rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+  }
+
+  .nav-cta:hover { background: var(--gold); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    background: var(--black);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 8rem 4rem 5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-tag {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 9vw, 9rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--offwhite);
+    margin-bottom: 2rem;
+  }
+
+  .hero h1 em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold-light);
+    font-size: 0.85em;
+  }
+
+  .hero-desc {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: rgba(245, 242, 236, 0.6);
+    max-width: 380px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-primary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold-light);
+    border: none;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--offwhite); }
+
+  .btn-ghost {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--offwhite);
+    background: transparent;
+    border: 1px solid rgba(245,242,236,0.3);
+    padding: 1rem 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-right::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--black) 0%, transparent 30%),
+                linear-gradient(to top, var(--black) 0%, transparent 40%);
+  }
+
+  .hero-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a16 0%, #2a2620 40%, #1a1510 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12rem;
+    color: rgba(184, 150, 12, 0.08);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem;
+    right: 3rem;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.4);
+  }
+
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 3rem;
+    background: linear-gradient(to bottom, rgba(184,150,12,0.6), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0%, 100% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ─── MARQUEE ─── */
+  .marquee-bar {
+    background: var(--gold);
+    padding: 0.85rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .marquee-track {
+    display: inline-flex;
+    animation: marquee 20s linear infinite;
+  }
+
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
+    color: var(--black);
+    padding: 0 2.5rem;
+  }
+
+  .marquee-dot {
+    color: rgba(0,0,0,0.3);
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    letter-spacing: 0.04em;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(184,150,12,0.4), transparent);
+  }
+
+  /* ─── FEATURED ARTICLE ─── */
+  .featured-section {
+    padding: 6rem 3rem;
+    background: var(--offwhite);
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .featured-card {
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .featured-image {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #1a1a16 0%, #2d2820 60%, #1a1510 100%);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .featured-image-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 8rem;
+    color: rgba(184, 150, 12, 0.12);
+    transition: transform 0.6s ease;
+  }
+
+  .featured-card:hover .featured-image-inner { transform: scale(1.04); }
+
+  .featured-tag {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold-light);
+    padding: 0.3rem 0.8rem;
+  }
+
+  .featured-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+  }
+
+  .featured-card:hover .featured-title { color: var(--gold); }
+
+  .featured-excerpt {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--warm-gray);
+    margin-bottom: 1.5rem;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+  }
+
+  .article-meta-dot { color: var(--gold); }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+    margin-top: 1.2rem;
+    transition: color 0.2s;
+  }
+
+  .read-more::after {
+    content: '→';
+    transition: transform 0.2s;
+  }
+
+  .featured-card:hover .read-more,
+  .read-more:hover { color: var(--gold); }
+
+  .featured-card:hover .read-more::after { transform: translateX(4px); }
+
+  /* Featured sidebar */
+  .featured-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .sidebar-article {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1.2rem;
+    padding: 1.8rem 0;
+    border-bottom: 1px solid var(--cream);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .sidebar-article:first-child { border-top: 1px solid var(--cream); }
+
+  .sidebar-thumb {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #1a1a16, #2a2520);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: rgba(184, 150, 12, 0.2);
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+  }
+
+  .sidebar-article:hover .sidebar-thumb { opacity: 0.8; }
+
+  .sidebar-content { display: flex; flex-direction: column; justify-content: center; }
+
+  .sidebar-tag {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .sidebar-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    transition: color 0.2s;
+  }
+
+  .sidebar-article:hover .sidebar-title { color: var(--gold); }
+
+  .sidebar-meta {
+    font-size: 0.68rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── PROGRAMS SECTION ─── */
+  .programs-section {
+    padding: 6rem 3rem;
+    background: var(--dark-gray);
+  }
+
+  .programs-section .section-title { color: var(--offwhite); }
+  .programs-section .section-label { color: var(--gold-light); }
+
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: rgba(184,150,12,0.15);
+  }
+
+  .program-card {
+    background: var(--dark-gray);
+    padding: 2.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .program-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .program-card:hover { background: #1f1f1a; }
+  .program-card:hover::before { transform: scaleX(1); }
+
+  .program-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+  }
+
+  .program-icon {
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+
+  .program-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--offwhite);
+    margin-bottom: 0.8rem;
+    line-height: 1.2;
+  }
+
+  .program-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: rgba(245, 242, 236, 0.45);
+    margin-bottom: 2rem;
+  }
+
+  .program-details {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .program-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .program-detail-label {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.3);
+  }
+
+  .program-detail-value {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(245,242,236,0.7);
+  }
+
+  .program-affiliate {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184,150,12,0.3);
+    padding: 0.5rem 0.9rem;
+    width: fit-content;
+    transition: all 0.2s;
+  }
+
+  .program-card:hover .program-affiliate {
+    background: var(--gold);
+    color: var(--black);
+  }
+
+  /* ─── AFFILIATE GEAR SECTION ─── */
+  .gear-section {
+    padding: 6rem 3rem;
+    background: var(--offwhite);
+  }
+
+  .gear-intro {
+    max-width: 500px;
+    margin-bottom: 3rem;
+  }
+
+  .gear-intro p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--warm-gray);
+    margin-top: 1rem;
+  }
+
+  .gear-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .gear-card {
+    background: white;
+    border: 1px solid var(--cream);
+    padding: 1.8rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .gear-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .gear-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--offwhite);
+    background: var(--gold);
+    padding: 0.2rem 0.5rem;
+  }
+
+  .gear-image {
+    width: 100%;
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #f0ece4, #e4dfd5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin-bottom: 1.2rem;
+    transition: transform 0.3s;
+  }
+
+  .gear-card:hover .gear-image { transform: scale(1.03); }
+
+  .gear-category {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .gear-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    line-height: 1.3;
+  }
+
+  .gear-price {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--warm-gray);
+    margin-bottom: 1rem;
+  }
+
+  .gear-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+
+  .gear-link::after { content: '→'; }
+  .gear-card:hover .gear-link { color: var(--gold); }
+
+  .affiliate-disclosure {
+    margin-top: 2rem;
+    padding: 1rem 1.5rem;
+    border-left: 2px solid var(--gold);
+    background: rgba(184,150,12,0.04);
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--warm-gray);
+    line-height: 1.6;
+  }
+
+  /* ─── NEWSLETTER ─── */
+  .newsletter-section {
+    background: var(--black);
+    padding: 6rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .newsletter-left h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    letter-spacing: 0.04em;
+    color: var(--offwhite);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .newsletter-left h2 em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--gold-light);
+    font-weight: 300;
+  }
+
+  .newsletter-left p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(245,242,236,0.5);
+  }
+
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .newsletter-form input {
+    background: rgba(245,242,236,0.06);
+    border: 1px solid rgba(245,242,236,0.12);
+    color: var(--offwhite);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    padding: 1rem 1.2rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .newsletter-form input::placeholder { color: rgba(245,242,236,0.3); }
+  .newsletter-form input:focus { border-color: var(--gold); }
+
+  .newsletter-form button {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold-light);
+    border: none;
+    padding: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .newsletter-form button:hover { background: var(--offwhite); }
+
+  .newsletter-perks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  .perk {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: rgba(245,242,236,0.45);
+  }
+
+  .perk::before {
+    content: '✓';
+    color: var(--gold);
+    font-size: 0.75rem;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(184,150,12,0.2);
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .footer-brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+    color: var(--offwhite);
+    margin-bottom: 0.8rem;
+  }
+
+  .footer-brand-name span { color: var(--gold); }
+
+  .footer-tagline {
+    font-size: 0.8rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: rgba(245,242,236,0.35);
+    margin-bottom: 1.5rem;
+    max-width: 220px;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-link {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(245,242,236,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: rgba(245,242,236,0.4);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .social-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  .footer-col h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .footer-links a {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: rgba(245,242,236,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--offwhite); }
+
+  .footer-bottom {
+    background: var(--black);
+    border-top: 1px solid rgba(245,242,236,0.06);
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p {
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: rgba(245,242,236,0.2);
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── ARTICLE PAGE ─── */
+  .article-page {
+    display: none;
+    min-height: 100vh;
+    background: var(--offwhite);
+    padding-top: 5rem;
+  }
+
+  .article-hero {
+    background: var(--black);
+    padding: 5rem 3rem 4rem;
+    position: relative;
+  }
+
+  .article-hero-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.4);
+    text-decoration: none;
+    margin-bottom: 2rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color 0.2s;
+  }
+
+  .back-btn:hover { color: var(--gold); }
+  .back-btn::before { content: '←'; }
+
+  .article-category {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .article-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--offwhite);
+    margin-bottom: 1.5rem;
+  }
+
+  .article-byline {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: rgba(245,242,236,0.4);
+  }
+
+  .article-body {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4rem 3rem;
+  }
+
+  .article-body p {
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.9;
+    color: #3a3730;
+    margin-bottom: 1.8rem;
+  }
+
+  .article-body h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin: 2.5rem 0 1rem;
+  }
+
+  .article-body h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 2rem 0 0.8rem;
+  }
+
+  /* Affiliate Link Block */
+  .affiliate-block {
+    background: linear-gradient(135deg, #1a1a16 0%, #232018 100%);
+    border: 1px solid rgba(184,150,12,0.25);
+    padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .affiliate-label {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .affiliate-product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--offwhite);
+    margin-bottom: 0.4rem;
+  }
+
+  .affiliate-product-desc {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: rgba(245,242,236,0.4);
+    line-height: 1.5;
+  }
+
+  .affiliate-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold-light);
+    border: none;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+  }
+
+  .affiliate-btn:hover { background: var(--offwhite); }
+
+  .inline-affiliate {
+    color: var(--gold);
+    text-decoration: underline;
+    text-decoration-color: rgba(184,150,12,0.4);
+    cursor: pointer;
+    font-weight: 400;
+    transition: text-decoration-color 0.2s;
+  }
+
+  .inline-affiliate:hover { text-decoration-color: var(--gold); }
+
+  /* ─── ADMIN/COMPOSE PANEL ─── */
+  .admin-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(10,10,8,0.97);
+    border-top: 1px solid rgba(184,150,12,0.3);
+    padding: 0.8rem 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 200;
+    backdrop-filter: blur(12px);
+  }
+
+  .admin-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .admin-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,242,236,0.6);
+    background: rgba(245,242,236,0.06);
+    border: 1px solid rgba(245,242,236,0.1);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .admin-btn:hover, .admin-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--black);
+  }
+
+  /* Compose Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--offwhite);
+    width: 90%;
+    max-width: 720px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 3rem;
+    position: relative;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--warm-gray);
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: white;
+    border: 1px solid var(--cream);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    padding: 0.85rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--gold);
+  }
+
+  .form-textarea {
+    min-height: 150px;
+    resize: vertical;
+    line-height: 1.7;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .affiliate-fields {
+    background: rgba(184,150,12,0.05);
+    border: 1px solid rgba(184,150,12,0.2);
+    padding: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .affiliate-fields-title {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .toggle {
+    position: relative;
+    width: 42px;
+    height: 22px;
+    cursor: pointer;
+  }
+
+  .toggle input { opacity: 0; width: 0; height: 0; }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--cream);
+    border-radius: 22px;
+    transition: background 0.2s;
+  }
+
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+
+  .toggle input:checked + .toggle-slider { background: var(--gold); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  .toggle-label {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--cream);
+  }
+
+  .btn-submit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--offwhite);
+    background: var(--black);
+    border: none;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex: 1;
+  }
+
+  .btn-submit:hover { background: var(--gold); }
+
+  .btn-cancel {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    background: transparent;
+    border: 1px solid var(--cream);
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+
+  /* ─── ANIMATIONS ─── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in:nth-child(1) { animation-delay: 0.1s; }
+  .fade-in:nth-child(2) { animation-delay: 0.25s; }
+  .fade-in:nth-child(3) { animation-delay: 0.4s; }
+  .fade-in:nth-child(4) { animation-delay: 0.55s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .featured-grid { grid-template-columns: 1fr; }
+    .programs-grid { grid-template-columns: 1fr; }
+    .gear-grid { grid-template-columns: 1fr 1fr; }
+    .newsletter-section { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr 1fr; }
+    .affiliate-block { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo" onclick="showHome()">MEATHEAD <span>METHOD</span></a>
+  <ul class="nav-links">
+    <li><a href="#articles">Articles</a></li>
+    <li><a href="#programs">Programs</a></li>
+    <li><a href="#gear">Gear</a></li>
+    <li><a href="#newsletter">Newsletter</a></li>
+  </ul>
+  <a href="#newsletter" class="nav-cta">Join Free</a>
+</nav>
+
+<!-- ═══ HOME PAGE ═══ -->
+<div id="homePage">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-tag fade-in">Training Intelligence</div>
+      <h1 class="fade-in">Lift<br><em>Smarter.</em><br>Grow<br>Stronger.</h1>
+      <p class="hero-desc fade-in">Science-backed programming, honest gear reviews, and nutrition strategy — built for serious athletes who demand more.</p>
+      <div class="hero-actions fade-in">
+        <a href="#programs" class="btn-primary">Browse Programs</a>
+        <a href="#articles" class="btn-ghost">Read Articles</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-image-placeholder">MM</div>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-bar">
+    <div class="marquee-track">
+      <span class="marquee-item">Strength Training</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Hypertrophy</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Nutrition Science</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Recovery Protocols</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Gear Reviews</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Expert Programming</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Performance Nutrition</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Strength Training</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Hypertrophy</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Nutrition Science</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Recovery Protocols</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Gear Reviews</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Expert Programming</span><span class="marquee-item marquee-dot">◆</span>
+      <span class="marquee-item">Performance Nutrition</span><span class="marquee-item marquee-dot">◆</span>
+    </div>
+  </div>
+
+  <!-- FEATURED ARTICLES -->
+  <section class="featured-section" id="articles">
+    <div class="section-header">
+      <span class="section-label">Latest</span>
+      <h2 class="section-title">Featured Articles</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="featured-grid">
+      <a class="featured-card" onclick="showArticle('progressive-overload')">
+        <div class="featured-image">
+          <div class="featured-image-inner">💪</div>
+          <span class="featured-tag">Strength</span>
+        </div>
+        <h3 class="featured-title">The Progressive Overload Playbook: Why Most Lifters Plateau — and How to Break Free</h3>
+        <p class="featured-excerpt">Progressive overload is the foundational principle of strength training, yet most gym-goers misunderstand it entirely. This deep-dive covers the mechanisms, misconceptions, and a bulletproof framework for permanent progress.</p>
+        <div class="article-meta">
+          <span>Mar 5, 2026</span>
+          <span class="article-meta-dot">◆</span>
+          <span>12 min read</span>
+          <span class="article-meta-dot">◆</span>
+          <span>Strength</span>
+        </div>
+        <span class="read-more">Read Article</span>
+      </a>
+
+      <div class="featured-sidebar">
+        <a class="sidebar-article" onclick="showArticle('protein-timing')">
+          <div class="sidebar-thumb">🥩</div>
+          <div class="sidebar-content">
+            <div class="sidebar-tag">Nutrition</div>
+            <div class="sidebar-title">Protein Timing: Does It Actually Matter?</div>
+            <div class="sidebar-meta">Feb 28 · 8 min read</div>
+          </div>
+        </a>
+        <a class="sidebar-article" onclick="showArticle('rdl-guide')">
+          <div class="sidebar-thumb">🏋️</div>
+          <div class="sidebar-content">
+            <div class="sidebar-tag">Technique</div>
+            <div class="sidebar-title">The Definitive RDL Guide: Form, Loading & Posterior Chain Mastery</div>
+            <div class="sidebar-meta">Feb 20 · 10 min read</div>
+          </div>
+        </a>
+        <a class="sidebar-article" onclick="showArticle('sleep-recovery')">
+          <div class="sidebar-thumb">😴</div>
+          <div class="sidebar-content">
+            <div class="sidebar-tag">Recovery</div>
+            <div class="sidebar-title">Sleep Architecture and Muscle Growth: What the Research Shows</div>
+            <div class="sidebar-meta">Feb 14 · 7 min read</div>
+          </div>
+        </a>
+        <a class="sidebar-article" onclick="showArticle('creatine')">
+          <div class="sidebar-thumb">⚗️</div>
+          <div class="sidebar-content">
+            <div class="sidebar-tag">Supplements</div>
+            <div class="sidebar-title">Creatine in 2026: The Complete, No-BS Evidence Review</div>
+            <div class="sidebar-meta">Feb 5 · 9 min read</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRAMS -->
+  <section class="programs-section" id="programs">
+    <div class="section-header">
+      <span class="section-label">Training</span>
+      <h2 class="section-title">Programs</h2>
+      <div class="section-line" style="background: linear-gradient(to right, rgba(184,150,12,0.4), transparent);"></div>
+    </div>
+
+    <div class="programs-grid">
+      <a class="program-card" onclick="showArticle('program-hypertrophy')">
+        <div class="program-number">01 / Hypertrophy</div>
+        <span class="program-icon">📈</span>
+        <div class="program-title">The Mass Protocol</div>
+        <div class="program-desc">A 16-week evidence-based hypertrophy block designed to maximize muscle protein synthesis through intelligent volume management and periodization.</div>
+        <div class="program-details">
+          <div class="program-detail">
+            <span class="program-detail-label">Duration</span>
+            <span class="program-detail-value">16 Weeks</span>
+          </div>
+          <div class="program-detail">
+            <span class="program-detail-label">Days/Week</span>
+            <span class="program-detail-value">4 Days</span>
+          </div>
+          <div class="program-detail">
+            <span class="program-detail-label">Level</span>
+            <span class="program-detail-value">Intermediate</span>
+          </div>
+        </div>
+        <span class="program-affiliate">View Program + Gear List →</span>
+      </a>
+
+      <a class="program-card" onclick="showArticle('program-strength')">
+        <div class="program-number">02 / Powerlifting</div>
+        <span class="program-icon">🏆</span>
+        <div class="program-title">Peak Strength Block</div>
+        <div class="program-desc">A competition-style peaking program built around the squat, bench, and deadlift. 12 weeks of structured intensity waves to peak your one-rep maxes.</div>
+        <div class="program-details">
+          <div class="program-detail">
+            <span class="program-detail-label">Duration</span>
+            <span class="program-detail-value">12 Weeks</span>
+          </div>
+          <div class="program-detail">
+            <span class="program-detail-label">Days/Week</span>
+            <span class="program-detail-value">3–5 Days</span>
+          </div>
+          <div class="program-detail">
+            <span class="program-detail-label">Level</span>
+            <span class="program-detail-value">Advanced</span>
+          </div>
+        </div>
+        <span class="program-affiliate">View Program + Gear List →</span>
+      </a>
+
+      <a class="program-card" onclick="showArticle('program-foundation')">
+        <div class="program-number">03 / Foundation</div>
+        <span class="program-icon">🔩</span>
+        <div class="program-title">Foundation & Form</div>
+        <div class="program-desc">The definitive beginner program. Master movement patterns, build a base of strength, and learn how to train for life — not just the next six weeks.</div>
+        <div class="program-details">
+          <div class="program-detail">
+            <span class="program-detail-label">Duration</span>
+            <span class="program-detail-value">8 Weeks</span>
+          </div>
+          <div class="program-detail">
+            <span class="program-detail-label">Days/Week</span>
+            <span class="program-detail-value">3 Days</span>
+          </div>
+          <div class="program-detail">
+            <span class="program-detail-label">Level</span>
+            <span class="program-detail-value">Beginner</span>
+          </div>
+        </div>
+        <span class="program-affiliate">View Program + Gear List →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- GEAR / AFFILIATE -->
+  <section class="gear-section" id="gear">
+    <div class="section-header">
+      <span class="section-label">Recommended</span>
+      <h2 class="section-title">Gear We Trust</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="gear-intro">
+      <p>Everything listed here is personally tested and genuinely recommended. Some links are affiliate links — they cost you nothing extra and help keep this content free.</p>
+    </div>
+
+    <div class="gear-grid">
+      <a class="gear-card" href="#" target="_blank">
+        <span class="gear-badge">Top Pick</span>
+        <div class="gear-image">🏋️</div>
+        <div class="gear-category">Belts</div>
+        <div class="gear-name">SBD Lever Belt 13mm</div>
+        <div class="gear-price">From $189</div>
+        <span class="gear-link">Shop Now</span>
+      </a>
+
+      <a class="gear-card" href="#" target="_blank">
+        <div class="gear-image">👟</div>
+        <div class="gear-category">Footwear</div>
+        <div class="gear-name">Adidas Adipower III</div>
+        <div class="gear-price">From $220</div>
+        <span class="gear-link">Shop Now</span>
+      </a>
+
+      <a class="gear-card" href="#" target="_blank">
+        <span class="gear-badge">Editor's Choice</span>
+        <div class="gear-image">⚗️</div>
+        <div class="gear-category">Supplements</div>
+        <div class="gear-name">Momentous Creatine</div>
+        <div class="gear-price">From $39</div>
+        <span class="gear-link">Shop Now</span>
+      </a>
+
+      <a class="gear-card" href="#" target="_blank">
+        <div class="gear-image">📊</div>
+        <div class="gear-category">Tracking</div>
+        <div class="gear-name">Whoop 4.0 Band</div>
+        <div class="gear-price">From $30/mo</div>
+        <span class="gear-link">Shop Now</span>
+      </a>
+    </div>
+
+    <div class="affiliate-disclosure">
+      <strong>Affiliate Disclosure:</strong> Meathead Method participates in affiliate programs. When you purchase through our links, we may earn a commission at no additional cost to you. We only recommend products we've genuinely tested and believe in.
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter-section" id="newsletter">
+    <div class="newsletter-left">
+      <h2>The <em>Method</em><br>Delivered Weekly.</h2>
+      <p>Programming breakdowns, nutrition deep-dives, and gear reviews — straight to your inbox every Thursday. No fluff, no spam. Unsubscribe anytime.</p>
+    </div>
+    <div class="newsletter-form">
+      <input type="text" placeholder="First name">
+      <input type="email" placeholder="Email address">
+      <button type="button">Subscribe — It's Free</button>
+      <div class="newsletter-perks">
+        <div class="perk">Weekly training & nutrition content</div>
+        <div class="perk">Exclusive subscriber-only program drops</div>
+        <div class="perk">Early access to gear reviews & discounts</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <div class="footer-brand-name">MEATHEAD <span>METHOD</span></div>
+      <p class="footer-tagline">Serious training content for serious athletes. Science-backed, no shortcuts.</p>
+      <div class="footer-social">
+        <a href="#" class="social-link">IG</a>
+        <a href="#" class="social-link">YT</a>
+        <a href="#" class="social-link">X</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Content</h4>
+      <ul class="footer-links">
+        <li><a href="#articles">Articles</a></li>
+        <li><a href="#programs">Programs</a></li>
+        <li><a href="#gear">Gear Reviews</a></li>
+        <li><a href="#newsletter">Newsletter</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Topics</h4>
+      <ul class="footer-links">
+        <li><a href="#">Strength Training</a></li>
+        <li><a href="#">Hypertrophy</a></li>
+        <li><a href="#">Nutrition</a></li>
+        <li><a href="#">Recovery</a></li>
+        <li><a href="#">Supplements</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>About</h4>
+      <ul class="footer-links">
+        <li><a href="#">Our Mission</a></li>
+        <li><a href="#">Affiliate Disclosure</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <div class="footer-bottom">
+    <p>© 2026 Meathead Method. All rights reserved.</p>
+    <p>Affiliate Disclosure: We earn commissions from qualifying purchases.</p>
+  </div>
+
+</div><!-- end homePage -->
+
+
+<!-- ═══ ARTICLE PAGE ═══ -->
+<div id="articlePage" class="article-page">
+
+  <div class="article-hero">
+    <div class="article-hero-inner">
+      <button class="back-btn" onclick="showHome()">Back to Home</button>
+      <div class="article-category" id="articleCategory">Strength</div>
+      <h1 class="article-headline" id="articleHeadline">The Progressive Overload Playbook</h1>
+      <div class="article-byline">
+        <span id="articleDate">March 5, 2026</span>
+        <span>◆</span>
+        <span id="articleReadTime">12 min read</span>
+        <span>◆</span>
+        <span>By The Meathead Method Team</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="article-body" id="articleBody">
+    <!-- Content injected by JS -->
+  </div>
+
+</div><!-- end articlePage -->
+
+
+<!-- ═══ ADMIN BAR ═══ -->
+<div class="admin-bar">
+  <span class="admin-label">⚡ Admin</span>
+  <button class="admin-btn" onclick="openModal('article')">+ New Article</button>
+  <button class="admin-btn" onclick="openModal('program')">+ New Program</button>
+  <button class="admin-btn" onclick="openModal('gear')">+ Add Gear Link</button>
+</div>
+
+
+<!-- ═══ COMPOSE MODALS ═══ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">New Article</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- Article Form -->
+    <div id="articleForm">
+      <div class="form-group">
+        <label class="form-label">Article Title</label>
+        <input class="form-input" type="text" placeholder="e.g. The Truth About Caloric Surplus for Muscle Gain">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select">
+            <option>Strength Training</option>
+            <option>Hypertrophy</option>
+            <option>Nutrition</option>
+            <option>Recovery</option>
+            <option>Supplements</option>
+            <option>Technique</option>
+            <option>Mindset</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Read Time (minutes)</label>
+          <input class="form-input" type="number" placeholder="8" min="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Excerpt / Summary</label>
+        <textarea class="form-textarea" placeholder="A 1–2 sentence summary shown in article cards..." style="min-height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Article Body</label>
+        <textarea class="form-textarea" placeholder="Write your article here. Use ## for headings, **bold** for emphasis..."></textarea>
+      </div>
+
+      <div class="affiliate-fields">
+        <div class="affiliate-fields-title">◆ Affiliate Links</div>
+        <div class="form-group">
+          <label class="form-label">Affiliate Product Name</label>
+          <input class="form-input" type="text" placeholder="e.g. SBD Lever Belt 13mm">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Affiliate URL</label>
+            <input class="form-input" type="url" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Button Label</label>
+            <input class="form-input" type="text" placeholder="Shop Now">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Short Description</label>
+          <input class="form-input" type="text" placeholder="Why you recommend this product">
+        </div>
+        <div class="toggle-group">
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          <span class="toggle-label">Show affiliate disclosure in article</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-submit">Publish Article</button>
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Program Form -->
+    <div id="programForm" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Program Name</label>
+        <input class="form-input" type="text" placeholder="e.g. 12-Week Hypertrophy Block">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Duration</label>
+          <input class="form-input" type="text" placeholder="e.g. 12 Weeks">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Days Per Week</label>
+          <input class="form-input" type="text" placeholder="e.g. 4 Days">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Level</label>
+          <select class="form-select">
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Focus</label>
+          <select class="form-select">
+            <option>Hypertrophy</option>
+            <option>Strength / Powerlifting</option>
+            <option>Fat Loss</option>
+            <option>Athletic Performance</option>
+            <option>Foundation / Beginner</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" placeholder="Describe the program, goals, and who it's for..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Program Content (weeks/phases)</label>
+        <textarea class="form-textarea" placeholder="Week 1: ... Week 2: ..."></textarea>
+      </div>
+
+      <div class="affiliate-fields">
+        <div class="affiliate-fields-title">◆ Recommended Gear (Affiliate Links)</div>
+        <div class="form-group">
+          <label class="form-label">Product Name + Affiliate URL (one per line)</label>
+          <textarea class="form-textarea" placeholder="SBD Belt | https://affiliate-link.com&#10;Adipower Shoes | https://affiliate-link.com" style="min-height:100px;"></textarea>
+        </div>
+        <div class="toggle-group">
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          <span class="toggle-label">Show gear section at end of program</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-submit">Publish Program</button>
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Gear Form -->
+    <div id="gearForm" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Product Name</label>
+        <input class="form-input" type="text" placeholder="e.g. Momentous Creatine Monohydrate">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select">
+            <option>Belts & Wraps</option>
+            <option>Footwear</option>
+            <option>Supplements</option>
+            <option>Tracking & Tech</option>
+            <option>Apparel</option>
+            <option>Home Gym Equipment</option>
+            <option>Books & Education</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Price (display)</label>
+          <input class="form-input" type="text" placeholder="e.g. From $39">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Affiliate URL</label>
+        <input class="form-input" type="url" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Why You Recommend It</label>
+        <textarea class="form-textarea" placeholder="Brief honest review or why this is in your stack..." style="min-height:100px;"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="toggle-group">
+          <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+          <span class="toggle-label">Mark as Top Pick</span>
+        </div>
+        <div class="toggle-group">
+          <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+          <span class="toggle-label">Mark as Editor's Choice</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-submit">Add to Gear Page</button>
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const articles = {
+    'progressive-overload': {
+      category: 'Strength',
+      headline: 'The Progressive Overload Playbook: Why Most Lifters Plateau — and How to Break Free',
+      date: 'March 5, 2026',
+      readTime: '12 min read',
+      body: `
+        <p>Progressive overload is the single most important concept in strength training. It's also one of the most misunderstood. Walk into any commercial gym on a Monday and you'll find dozens of people doing the exact same workout they did six months ago — and wondering why they look identical to six months ago.</p>
+        <h2>What Progressive Overload Actually Means</h2>
+        <p>The principle is deceptively simple: to continue making adaptations, the body must be subjected to increasing demands over time. But "increasing demands" doesn't mean slapping another plate on the bar every session. That road ends fast, usually in injury.</p>
+        <p>True progressive overload can be applied across multiple variables: load, volume, density, range of motion, time under tension, and exercise complexity. The most effective athletes cycle through these systematically rather than chasing one in isolation.</p>
+        <div class="affiliate-block">
+          <div>
+            <div class="affiliate-label">◆ Recommended Gear</div>
+            <div class="affiliate-product-name">SBD Lever Belt 13mm</div>
+            <div class="affiliate-product-desc">The belt used in this program. Lifts heavier, safer. Trusted by competitive powerlifters worldwide.</div>
+          </div>
+          <a href="#" class="affiliate-btn" target="_blank">Shop — $189 →</a>
+        </div>
+        <h2>The Plateau Trap</h2>
+        <p>Most intermediate lifters plateau not because they've maxed out their genetic potential, but because they've stopped being strategic. They add weight when it feels easy, deload when they feel beaten up, and never track with enough precision to identify where the breakdown actually is.</p>
+        <p>Research consistently shows that structured <span class="inline-affiliate" href="#">training logs and tracking tools</span> are among the highest-ROI interventions for intermediate athletes. You can't manage what you don't measure.</p>
+        <h3>The Three Variables That Matter Most</h3>
+        <p>When designing a progressive overload framework, prioritize: (1) weekly volume per muscle group, measured in hard sets; (2) proximity to failure, tracked via RPE or reps in reserve; and (3) average load over a training block, not just your top sets. Each of these can be incrementally increased and tracked independently.</p>
+        <h2>A 12-Week Progressive Loading Template</h2>
+        <p>The most practical implementation for intermediate lifters is a wave-loading structure: increase volume for 3 weeks, then reduce load by 10–15% for a deload week, then reset at a higher baseline. This approach allows continuous long-term progression while managing fatigue accumulation.</p>
+        <div class="affiliate-block">
+          <div>
+            <div class="affiliate-label">◆ Recommended Supplement</div>
+            <div class="affiliate-product-name">Momentous Creatine Monohydrate</div>
+            <div class="affiliate-product-desc">5g daily supports strength adaptations and recovery. NSF Certified for Sport, third-party tested.</div>
+          </div>
+          <a href="#" class="affiliate-btn" target="_blank">Shop — $39 →</a>
+        </div>
+        <p>Progressive overload isn't a hack or a secret. It's the application of patience and precision over time. The athletes who master it aren't necessarily the most talented — they're the most consistent and the most honest about where they actually are in their training.</p>
+      `
+    }
+  };
+
+  function showArticle(id) {
+    const a = articles[id] || {
+      category: 'Article',
+      headline: 'Coming Soon',
+      date: 'March 2026',
+      readTime: '— min read',
+      body: '<p>This article is coming soon. Check back later or <a href="#newsletter">subscribe to the newsletter</a> to be notified when it drops.</p>'
+    };
+    document.getElementById('articleCategory').textContent = a.category;
+    document.getElementById('articleHeadline').textContent = a.headline;
+    document.getElementById('articleDate').textContent = a.date;
+    document.getElementById('articleReadTime').textContent = a.readTime;
+    document.getElementById('articleBody').innerHTML = a.body;
+    document.getElementById('homePage').style.display = 'none';
+    document.getElementById('articlePage').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showHome() {
+    document.getElementById('articlePage').style.display = 'none';
+    document.getElementById('homePage').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openModal(type) {
+    document.getElementById('articleForm').style.display = type === 'article' ? 'block' : 'none';
+    document.getElementById('programForm').style.display = type === 'program' ? 'block' : 'none';
+    document.getElementById('gearForm').style.display = type === 'gear' ? 'block' : 'none';
+    const titles = { article: 'New Article', program: 'New Program', gear: 'Add Gear Link' };
+    document.getElementById('modalTitle').textContent = titles[type];
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(e) {
+    if (!e || e.target === document.getElementById('modalOverlay')) {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+</body>
+</html>
