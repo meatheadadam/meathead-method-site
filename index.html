@@ -1703,12 +1703,41 @@
 </div><!-- end articlePage -->
 
 
+<!-- ═══ ADMIN LOCK SCREEN ═══ -->
+<div id="adminLock" style="display:none; position:fixed; inset:0; background:rgba(10,10,8,0.97); z-index:500; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
+  <div style="width:100%; max-width:380px; padding:2.5rem; background:var(--dark-gray); border:1px solid rgba(184,150,12,0.25); position:relative;">
+    <button onclick="closeLock()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:rgba(245,242,236,0.3); font-size:1.2rem; cursor:pointer; line-height:1; transition:color 0.2s;" onmouseover="this.style.color='rgba(245,242,236,0.8)'" onmouseout="this.style.color='rgba(245,242,236,0.3)'">✕</button>
+    <div style="font-family:'Bebas Neue',sans-serif; font-size:0.8rem; letter-spacing:0.2em; color:var(--gold); margin-bottom:0.5rem;">⚡ Admin Access</div>
+    <div style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:400; color:var(--offwhite); margin-bottom:2rem; line-height:1.2;">Enter your<br><em style="color:var(--gold-light);">password</em></div>
+    <input id="adminPasswordInput" type="password" placeholder="Password"
+      style="width:100%; background:rgba(245,242,236,0.06); border:1px solid rgba(245,242,236,0.12); color:var(--offwhite); font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:300; padding:0.9rem 1rem; outline:none; margin-bottom:0.8rem; transition:border-color 0.2s;"
+      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(245,242,236,0.12)'"
+      onkeydown="if(event.key==='Enter') attemptAdminLogin()">
+    <div id="adminError" style="display:none; font-size:0.75rem; color:#e05c5c; margin-bottom:0.8rem; letter-spacing:0.04em;">Incorrect password. Try again.</div>
+    <button onclick="attemptAdminLogin()"
+      style="width:100%; font-family:'DM Sans',sans-serif; font-size:0.75rem; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--black); background:var(--gold-light); border:none; padding:1rem; cursor:pointer; transition:background 0.2s;"
+      onmouseover="this.style.background='var(--offwhite)'" onmouseout="this.style.background='var(--gold-light)'">
+      Unlock Admin
+    </button>
+    <div style="margin-top:1.2rem; font-size:0.68rem; font-weight:300; color:rgba(245,242,236,0.2); line-height:1.6; text-align:center;">Session stays unlocked until you close the browser tab.</div>
+  </div>
+</div>
+
 <!-- ═══ ADMIN BAR ═══ -->
-<div class="admin-bar">
+<div class="admin-bar" id="adminBar" style="display:none;">
   <span class="admin-label">⚡ Admin</span>
   <button class="admin-btn" onclick="openModal('article')">+ New Article</button>
   <button class="admin-btn" onclick="openModal('program')">+ New Program</button>
   <button class="admin-btn" onclick="openModal('gear')">+ Add Gear Link</button>
+  <button class="admin-btn" onclick="lockAdmin()" style="margin-left:auto;">🔒 Lock</button>
+</div>
+
+<!-- ═══ ADMIN KEY HINT (always visible, reveals lock screen) ═══ -->
+<div id="adminHint" style="position:fixed; bottom:1rem; right:1.5rem; z-index:400; opacity:0; transition:opacity 0.3s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">
+  <button onclick="showLock()"
+    style="font-family:'DM Sans',sans-serif; font-size:0.6rem; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:rgba(245,242,236,0.25); background:rgba(10,10,8,0.7); border:1px solid rgba(245,242,236,0.08); padding:0.4rem 0.8rem; cursor:pointer; backdrop-filter:blur(4px);">
+    Admin
+  </button>
 </div>
 
 
@@ -1984,6 +2013,58 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeModal();
   });
+
+  // ─── ADMIN AUTH ───
+
+  const ADMIN_HASH = '72d2a05452f0eba914ef4d86a5200ff0f4877bffad8bb6532e9040fb26a65c39';
+ 
+
+  async function hashPassword(pw) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    console.log('Your hash:', hash);
+    return hash;
+  }
+
+  function showLock() {
+    document.getElementById('adminLock').style.display = 'flex';
+    setTimeout(() => document.getElementById('adminPasswordInput').focus(), 50);
+  }
+
+  function closeLock() {
+    document.getElementById('adminLock').style.display = 'none';
+    document.getElementById('adminPasswordInput').value = '';
+    document.getElementById('adminError').style.display = 'none';
+  }
+
+  async function attemptAdminLogin() {
+    const input = document.getElementById('adminPasswordInput').value;
+    const hash = await hashPassword(input);
+    if (hash === ADMIN_HASH) {
+      sessionStorage.setItem('mm_admin', '1');
+      document.getElementById('adminLock').style.display = 'none';
+      document.getElementById('adminBar').style.display = 'flex';
+      document.getElementById('adminHint').style.display = 'none';
+      document.getElementById('adminPasswordInput').value = '';
+      document.getElementById('adminError').style.display = 'none';
+    } else {
+      document.getElementById('adminError').style.display = 'block';
+      document.getElementById('adminPasswordInput').value = '';
+      document.getElementById('adminPasswordInput').focus();
+    }
+  }
+
+  function lockAdmin() {
+    sessionStorage.removeItem('mm_admin');
+    document.getElementById('adminBar').style.display = 'none';
+    document.getElementById('adminHint').style.display = 'block';
+  }
+
+  // Restore session if already authenticated this tab
+  if (sessionStorage.getItem('mm_admin') === '1') {
+    document.getElementById('adminBar').style.display = 'flex';
+    document.getElementById('adminHint').style.display = 'none';
+  }
 </script>
 
 </body>
