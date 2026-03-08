@@ -2288,7 +2288,7 @@
   }
 
   // ─── ADMIN AUTH ───
-  const ADMIN_HASH = '24d5da3681d23e9900a07225928466e316fd6bbaac6edb7007eb96d64151fd83';
+  const ADMIN_HASH = '72d2a05452f0eba914ef4d86a5200ff0f4877bffad8bb6532e9040fb26a65c39';
 
   async function hashPassword(pw) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
